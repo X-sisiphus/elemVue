@@ -61,6 +61,7 @@ export default {
       daId: this.$route.query.daId,
       user: {},
       deliveryAddress: {}
+      
     }
   },
   created() {

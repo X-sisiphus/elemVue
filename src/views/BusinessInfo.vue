@@ -2,6 +2,7 @@
   <div class="wrapper">
     <!-- header部分 -->
     <header>
+      <div style="position:absolute;left:2vw;top:2.1vw" @click="back()">&lt;</div>
       <p>商家信息</p>
     </header>
     <!-- 商家logo部分 -->
@@ -35,7 +36,9 @@
           </div>
         </div>
       </li>
+      <li style="height:16vw"></li>
     </ul>
+
     <!-- 购物车部分 -->
     <div class="cart">
       <div class="cart-left">
@@ -70,6 +73,8 @@ export default {
   data() {
     return {
       businessId: this.$route.query.businessId,
+      fromRouter: this.$route.query.fromRouter,
+      orderTypeId: this.$route.query.orderTypeId,
       business: {},
       foodArr: [],
       user: {},
@@ -105,6 +110,18 @@ export default {
     });
   },
   methods: {
+    back(){
+      if(this.fromRouter == "index"){
+      this.$router.push({
+          path: '/index'
+        })
+      }
+      if(this.fromRouter == "list"){
+      this.$router.push({
+          path: '/businessList'+"?orderTypeId="+this.orderTypeId
+        })
+      }
+    },
     listCart() {
       axios.post('CartController/listCart', this.$qs.stringify({
         businessId: this.businessId,
@@ -214,7 +231,9 @@ export default {
       this.$router.push({
         path: '/orders',
         query: {
-          businessId: this.business.businessId
+          businessId: this.business.businessId,
+          fromRouter: this.fromRouter,
+          orderTypeId: this.orderTypeId,
         }
       });
     }

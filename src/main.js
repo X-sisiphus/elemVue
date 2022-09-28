@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import iView from 'iview';
 import 'font-awesome/css/font-awesome.min.css'
 import axios from 'axios'
 import qs from 'qs'
@@ -13,7 +14,8 @@ import {
     getLocalStorage,
     removeLocalStorage
 } from './common.js'
-
+import 'iview/dist/styles/iview.css';
+Vue.use(iView);
 Vue.prototype.axios = axios;
 Vue.config.productionTip = false;
 //设置axios的基础url部分

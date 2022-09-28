@@ -75,7 +75,7 @@ export default{
       });
     },
     toBusinessInfo(businessId){
-      this.$router.push({path:'/businessInfo',query:{businessId:businessId}});
+      this.$router.push({path:'/businessInfo',query:{businessId:businessId,fromRouter:"list",orderTypeId:this.orderTypeId}});
     }
   }
 }

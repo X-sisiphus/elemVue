@@ -2,6 +2,7 @@
   <div class="wrapper">
     <!-- header部分 -->
     <header>
+            <div style="position:absolute;left:2vw;top:2.1vw" @click="back()">&lt;</div>
       <p>确认订单</p>
     </header>
     <!-- 订单信息部分 -->
@@ -46,6 +47,8 @@ export default{
   data(){
     return {
       businessId:this.$route.query.businessId,
+      fromRouter: this.$route.query.fromRouter,
+      orderTypeId: this.$route.query.orderTypeId,
       business:{},
       user:{},
       cartArr:[],
@@ -91,6 +94,12 @@ export default{
     }
   },
   methods:{
+    back(){
+      this.$router.push({
+          path: '/businessInfo?businessId='+this.businessId+'&fromRouter='+this.fromRouter+'&orderTypeId='+this.orderTypeId,
+          query:{businessId:this.businessId,fromRouter:this.fromRouter,orderTypeId: this.orderTypeId}
+        })
+    },
     toUserAddress(){
       this.$router.push({path:'/userAddress',query:{businessId:this.businessId}});
     },

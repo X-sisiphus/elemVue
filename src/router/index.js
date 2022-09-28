@@ -11,6 +11,7 @@ import OrderList from '../views/OrderList.vue'
 import AddUserAddress from '../views/AddUserAddress.vue'
 import EditUserAddress from '../views/EditUserAddress.vue'
 import Register from '../views/Register.vue'
+import UserCenter from '../views/UserCenter.vue'
 Vue.use(VueRouter)
 const routes = [{
     path: '/',
@@ -60,6 +61,10 @@ const routes = [{
     path: '/register',
     name: 'Register',
     component: Register
+}, {
+    path: '/userCenter',
+    name: 'UserCenter',
+    component: UserCenter
 }
 
 ]
