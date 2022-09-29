@@ -27,11 +27,11 @@
     <!-- 支付方式部分 -->
     <ul class="payment-type">
       <li>
-        <img src="../assets/alipay.png">
+        <img style="width:20vw;height:20vw" src="../assets/alipay.png">
         <i class="fa fa-check-circle"></i>
       </li>
       <li>
-        <img src="../assets/wechat.png">
+        <img style="width:20vw;height:20vw" src="../assets/wechat.png">
       </li>
     </ul>
     <div class="payment-button">
@@ -97,7 +97,7 @@ export default {
 .wrapper header {
   width: 100%;
   height: 12vw;
-  background-color: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 4.8vw;
   position: fixed;

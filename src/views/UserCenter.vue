@@ -5,7 +5,7 @@
       <p>我的账户</p>
     </header>
     <!-- 订单列表部分 -->
-      
+      <body>
     <img  style="height:20vw;weight:20vw;margin-top:55vw;margin-left:40vw;" src="../assets/touxiang.png"/>
     <h2 style="text-align:center;margin-top:10vw;" >
     <img v-show="userSex" style="height:4vw;weight:4vw;" src="../assets/man.png"/>
@@ -42,6 +42,7 @@
         
     </Modal>
     <!-- 底部菜单部分 -->
+    </body>
     <Footer></Footer>
   </div>
 </template>
@@ -70,8 +71,10 @@ export default{
       userId:this.user.userId,
     })).then(response=>{
       let result = response.data;
-      
       this.userSex = result.userSex;
+      if(result.userSex==0){
+        this.sex = "0"
+      }
       this.userName = result.userName;
     }).catch(error=>{
       console.error(error);
@@ -108,7 +111,8 @@ export default{
       password:this.newPassword
     })).then(this.fresh)
                 this.$Message.info('修改成功');
-      this.$router.push({path:'/login'});
+
+
             },
   },
   
@@ -122,12 +126,25 @@ export default{
 .wrapper {
   width: 100%;
   height: 100%;
+/* animation: 0.4s rowup forwards; */
+}
+.wrapper body {
+
+  animation: 0.7s rowup forwards;
+}
+@keyframes rowup {
+    0% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 /****************** header部分 ******************/
 .wrapper header {
   width: 100%;
   height: 12vw;
-  background-color: #0097FF;
+  background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 4.8vw;
   position: fixed;

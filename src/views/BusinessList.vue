@@ -5,6 +5,7 @@
       <p>商家列表</p>
     </header>
     <!-- 商家列表部分 -->
+    <body>
     <ul class="business">
       <li v-for="item in businessArr" @click="toBusinessInfo(item.businessId)" :key="item.businessId">
         <div class="business-img">
@@ -19,6 +20,7 @@
         </div>
       </li>
     </ul>
+    </body>
     <!-- 底部菜单部分 -->
     <Footer></Footer>
   </div>
@@ -86,11 +88,21 @@ export default{
   width: 100%;
   height: 100%;
 }
-/****************** header部分 ******************/
+.wrapper body {
+  animation: 0.7s rowup forwards;
+}
+@keyframes rowup {
+    0% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+}/****************** header部分 ******************/
 .wrapper header {
   width: 100%;
   height: 12vw;
-  background-color: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 4.8vw;
   position: fixed;

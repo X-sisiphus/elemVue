@@ -6,6 +6,7 @@
       <p>确认订单</p>
     </header>
     <!-- 订单信息部分 -->
+    <body>
     <div class="order-info">
       <h5>订单配送至：</h5>
       <div class="order-info-address" @click="toUserAddress">
@@ -38,6 +39,7 @@
         去支付
       </div>
     </div>
+    </body>
   </div>
 </template>
 <script>
@@ -135,11 +137,22 @@ export default{
   width: 100%;
   height: 100%;
 }
+.wrapper body {
+  animation: 0.7s rowup forwards;
+}
+@keyframes rowup {
+    0% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 /****************** header部分 ******************/
 .wrapper header {
   width: 100%;
-  height: 12vw;
-  background-color: #0097FF;
+  height: 12.1vw;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 4.8vw;
   position: fixed;
@@ -155,7 +168,7 @@ export default{
   /*注意这里，不设置高，靠内容撑开。因为地址有可能折行*/
   width: 100%;
   margin-top: 12vw;
-  background-color: #0097EF;
+  background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   box-sizing: border-box;
   padding: 2vw;
   color: #fff;

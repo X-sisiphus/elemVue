@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "element-ui": "^2.15.10",
     "font-awesome": "^4.7.0",
     "iview": "^3.5.4",
     "qs": "^6.11.0",

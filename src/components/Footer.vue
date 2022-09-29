@@ -1,7 +1,7 @@
 <template>
   <ul class="footer">
     <div :class="{'yuan1':flag1,'yuan2':flag2,'yuan3':flag3,'yuan4':flag4}"></div>
-    <li @click="toIndex" :class="{'pick':flag1,'unpick':flag2,'unpick':flag3,'unpick':flag4}">
+    <li @click="toIndex" :class="[flag1? 'pick':'unpick']">
       <i class="fa fa-home"></i>
       <p>首页</p>
     </li>
@@ -71,7 +71,7 @@ export default{
 .yuan1 {
 z-index: 0;
 
-  background: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
 -moz-border-radius: 50px;
 -webkit-border-radius: 50px;
 border-radius: 50px;
@@ -82,7 +82,7 @@ animation: 0.7s rowup forwards;
 }
 .yuan2 {
 z-index: 0;
-  background: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
 -moz-border-radius: 50px;
 -webkit-border-radius: 50px;
 border-radius: 50px;
@@ -93,7 +93,7 @@ top: 1vw;
 .yuan3 {
 z-index: 0;
 
-  background: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
 -moz-border-radius: 50px;
 -webkit-border-radius: 50px;
 border-radius: 50px;
@@ -116,7 +116,7 @@ height: 11vw;
 .yuan4 {
 z-index: 0;
 
-  background: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
 -moz-border-radius: 50px;
 -webkit-border-radius: 50px;
 border-radius: 50px;

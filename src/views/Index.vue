@@ -12,6 +12,7 @@
     搜索框部分（此块与search-fixed-top块宽度高度一致，用于当
     search-fixed-top块固定后，挡住下面块不要窜上去）
     -->
+    <body>
     <div class="search">
       <!-- 当滚动条超过上面的定位块时，search-fixed-top块变成固定在顶部。 -->
       <div class="search-fixed-top" ref="fixedBox">
@@ -22,6 +23,7 @@
       </div>
     </div>
     <!-- 点餐分类部分 -->
+    
     <ul class="foodtype">
       <li @click="toBusinessList(1)">
         <img src="../assets/dcfl01.png">
@@ -145,6 +147,7 @@
       
       <li style="height:12vw"></li>
     </ul>
+    </body>
     <!-- 底部菜单部分 -->
     <Footer></Footer>
   </div>
@@ -216,11 +219,22 @@ export default {
   width: 100%;
   height: 100%;
 }
+.wrapper body {
+  animation: 2s rowup forwards;
+}
+@keyframes rowup {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 /****************** header ******************/
 .wrapper header {
   width: 100%;
-  height: 12vw;
-  background-color: #0097FF;
+  height: 12.1vw;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   display: flex;
   align-items: center;
 }
@@ -241,11 +255,13 @@ export default {
 .wrapper .search {
   width: 100%;
   height: 13vw;
+
 }
 .wrapper .search .search-fixed-top {
   width: 100%;
   height: 13vw;
-  background-color: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -399,6 +415,7 @@ export default {
 .wrapper .business {
   width: 100%;
   margin-bottom: 14vw;
+  
 }
 .wrapper .business li {
   width: 100%;
@@ -407,6 +424,7 @@ export default {
   user-select: none;
   border-bottom: solid 1px #DDD;
   display: flex;
+  
 }
 .wrapper .business li img {
   width: 18vw;
@@ -458,7 +476,7 @@ export default {
   margin-left: 1vw;
 }
 .wrapper .business li .business-info .business-info-star .business-info-star-right {
-  background-color: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 2.4vw;
   border-radius: 2px;

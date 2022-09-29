@@ -5,6 +5,7 @@
       <p>我的订单</p>
     </header>
     <!-- 订单列表部分 -->
+    <body>
     <h3>未支付订单信息：</h3>
     <ul class="order">
       <li v-for="item in orderArr"  :key="item.orderId" >
@@ -54,6 +55,7 @@
         </ul>
       </li>
     </ul>
+    </body>
     <!-- 底部菜单部分 -->
     <Footer></Footer>
   </div>
@@ -101,12 +103,24 @@ export default{
 .wrapper {
   width: 100%;
   height: 100%;
+/* animation: 0.4s rowup forwards; */
+}
+.wrapper body {
+  animation: 0.7s rowup forwards;
+}
+@keyframes rowup {
+    0% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 /****************** header部分 ******************/
 .wrapper header {
   width: 100%;
   height: 12vw;
-  background-color: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 4.8vw;
   position: fixed;

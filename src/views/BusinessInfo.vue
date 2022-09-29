@@ -6,6 +6,7 @@
       <p>商家信息</p>
     </header>
     <!-- 商家logo部分 -->
+    <body>
     <div class="business-logo">
       <img :src="business.businessImg">
     </div>
@@ -16,7 +17,20 @@
       <p>{{business.businessExplain}}</p>
     </div>
     <!-- 食品列表部分 -->
-    <ul class="food">
+    <Menu mode="horizontal" :theme="theme1" active-name="1" @on-select="tofc">
+        <Menu-item name="1">
+            <Icon type="ios-paper"></Icon>
+            食品列表
+        </Menu-item>
+        <Menu-item name="2">
+            <Icon type="ios-people"></Icon>
+            评价
+        </Menu-item>
+    </Menu>    
+
+
+
+    <ul class="food" v-if="fo">
       <li v-for="(item,index) in foodss[0]" :key="index">
         <div class="food-left">
           <img :src="item.foodImg">
@@ -38,9 +52,33 @@
       </li>
       <li style="height:16vw"></li>
     </ul>
+    <ul class="food" v-if="!fo">
+      <li v-for="(item,index) in com" :key="index">
+      <ul>
+        <li>
+          <img  style="height:5vw;weight:5vw;margin-top:2vw;margin-left:3vw;" src="../assets/touxiang.png"/>
+        <div>{{item.userId}}</div>
+        <el-rate style="width:90%;hieght:80%;"
+    v-model="item.star" disabled
+    :colors="colors">
+  </el-rate>
+        </li>
+        <li>
+  <div  v-if="item.content != ex" style="width:80vw;word-wrap:break-word;margin-left:4vw;">{{item.content}}</div>
+    <div v-if="item.content == ex" style="width:80vw;word-wrap:break-word;margin-left:4vw;">该用户没有做出评价</div>
+  </li>
+  <el-divider></el-divider>
+      </ul>
+      
+      </li>
+      
+      <li v-if="!fo" style="height:45vw"></li>
+      
+      <li style="height:16vw"></li>
+    </ul>
 
     <!-- 购物车部分 -->
-    <div class="cart">
+    <div class="cart"  v-if="fo">
       <div class="cart-left">
         <div class="cart-left-icon" :style="totalQuantity==0?'background-color:#505051;':'background-color:#3190E8;'">
           <i class="fa fa-shopping-cart"></i>
@@ -64,6 +102,19 @@
         </div>
       </div>
     </div>
+    <div class="com"  v-if="!fo">
+    <div class="com-wai">
+      <span style="width:90%;hieght:80%;position:absolute;left:5%;top:5%">给商家打分吧</span>
+      <el-rate style="width:90%;hieght:80%;position:absolute;left:5%;top:14%"
+    v-model="value2"
+    :colors="colors">
+  </el-rate>
+            <Input v-model="usercom" type="textarea" :rows="4" placeholder="请输入..." style="width:90%;hieght:80%;position:absolute;left:5%;top:27%"></Input>
+    <Button @click="takecom" style="width:20%;hieght:10%;position:absolute;right:5%;top:78%">提交</Button>
+    </div>
+    </div>
+
+    </body>
   </div>
 </template>
 <script>
@@ -72,18 +123,34 @@ export default {
   name: 'BusinessInfo',
   data() {
     return {
+      colors: ['#99A9BF', '#F7BA2A', '#FFC125'],
       businessId: this.$route.query.businessId,
       fromRouter: this.$route.query.fromRouter,
       orderTypeId: this.$route.query.orderTypeId,
       business: {},
+      com:[],
       foodArr: [],
       user: {},
       foodss: [],
+      fo:true,
+      theme1: 'light',
+      usercom:"",
+      value2:5,
+      ex:"",
     }
   },
   created() {
     this.user = this.$getSessionStorage('user');
+     axios.post('CommentsController/listComment', this.$qs.stringify({
+      businessId: this.businessId
+    })).then(response => {
+      this.com = response.data;
+    }).catch(error => {
+      console.error(error);
+    });
+    
     //根据businessId查询商家信息
+
    axios.post('BusinessController/getBusinessById', this.$qs.stringify({
       businessId: this.businessId
     })).then(response => {
@@ -110,6 +177,23 @@ export default {
     });
   },
   methods: {
+    takecom(){
+    axios.post('CommentsController/saveComment', this.$qs.stringify({
+      businessId: this.businessId,
+      userId: this.user.userId,
+      foodId: this.foodss[0].foodId,
+      content: this.usercom,
+      star: this.value2
+    }))
+    },
+    tofc(key){
+        if(key==1){
+this.fo = true
+        }
+        else{
+this.fo = false
+        }
+    },
     back(){
       if(this.fromRouter == "index"){
       this.$router.push({
@@ -267,13 +351,22 @@ export default {
 .wrapper {
   width: 100%;
   height: 100%;
+
+}
+@keyframes rowup {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 /****************** header部分 ******************/
 .wrapper header {
   width: 100%;
   height: 12vw;
-  background-color: #0097FF;
-  color: #fff;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
+  color: white;
   font-size: 4.8vw;
   position: fixed;
   left: 0;
@@ -282,6 +375,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.wrapper body {
+  animation: 2s rowup forwards;
 }
 /****************** 商家logo部分 ******************/
 .wrapper .business-logo {
@@ -378,11 +474,27 @@ export default {
   left: 0;
   bottom: 0;
   display: flex;
+
+}
+.wrapper .com {
+  width: 100%;
+  height: 54vw;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  
 }
 .wrapper .cart .cart-left {
   flex: 2;
   background-color: #505051;
   display: flex;
+}
+.wrapper .com .com-wai {
+  flex: 2;
+  background: linear-gradient(to top, #0097FF, rgb(248, 248, 248));
+  display: flex;
+  border-radius: 20px 20px 5px 5px;
 }
 .wrapper .cart .cart-left .cart-left-icon {
   width: 16vw;

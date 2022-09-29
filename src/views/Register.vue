@@ -134,7 +134,7 @@ export default {
 .wrapper header {
   width: 100%;
   height: 12vw;
-  background-color: #0097FF;
+    background: linear-gradient(to right, #0097FF, rgb(177, 201, 247));
   color: #fff;
   font-size: 4.8vw;
   position: fixed;
