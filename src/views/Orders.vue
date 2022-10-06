@@ -54,7 +54,8 @@ export default{
       business:{},
       user:{},
       cartArr:[],
-      deliveryaddress:{}
+      deliveryaddress:{},
+      foodlist: this.$route.query.foodlist,
     }
   },
   created() {
@@ -99,7 +100,7 @@ export default{
     back(){
       this.$router.push({
           path: '/businessInfo?businessId='+this.businessId+'&fromRouter='+this.fromRouter+'&orderTypeId='+this.orderTypeId,
-          query:{businessId:this.businessId,fromRouter:this.fromRouter,orderTypeId: this.orderTypeId}
+          query:{businessId:this.businessId,fromRouter:this.fromRouter,orderTypeId: this.orderTypeId,foodlist: this.foodlist,}
         })
     },
     toUserAddress(){

@@ -17,14 +17,12 @@
       <!-- 当滚动条超过上面的定位块时，search-fixed-top块变成固定在顶部。 -->
       <div class="search-fixed-top" ref="fixedBox">
         <!-- 搜索框部分中间的白框 -->
-        <div class="search-box">
-          <i class="fa fa-search"></i>搜索饿了么商家、商品名称
-        </div>
+        <Input @on-change="search" v-model="keywords" placeholder="搜索饿了么商家、商品名称" style="width: 90vw"></Input>
       </div>
     </div>
     <!-- 点餐分类部分 -->
     
-    <ul class="foodtype">
+    <ul class="foodtype" v-if="searching == 0">
       <li @click="toBusinessList(1)">
         <img src="../assets/dcfl01.png">
         <p>美食</p>
@@ -67,13 +65,13 @@
       </li>
     </ul>
     <!-- 横幅广告部分（注意：此处有背景图片） -->
-    <div class="banner">
+    <div class="banner"  v-if="searching == 0" @click="combo">
       <h3>品质套餐</h3>
       <p>搭配齐全吃得好</p>
       <a>立即抢购 &gt;</a>
     </div>
     <!-- 超级会员部分 -->
-    <div class="supermember">
+    <div class="supermember"  v-if="searching == 0">
       <div class="left">
         <img src="../assets/super_member.png">
         <h3>超级会员</h3>
@@ -90,15 +88,15 @@
       <div class="recommend-line"></div>
     </div>
     <!-- 推荐方式部分 -->
-    <ul class="recommendtype">
-      <li>综合排序<i class="fa fa-caret-down"></i></li>
-      <li>距离最近</li>
-      <li>销量最高</li>
+    <ul class="recommendtype"   v-if="searching == 0">
+      <li @click="mutisql">综合排序</li>
+      <li @click="distancesql">距离最近</li>
+      <li @click="mailsql">销量最高</li>
       <li>筛选<i class="fa fa-filter"></i></li>
     </ul>
     <!-- 推荐商家列表部分 -->
     <ul class="business">
-      <li  v-for="item in businessArr" @click="toBusinessInfo(item.businessId)" :key="item.businessId">
+      <li  v-for="(item,index) in businessArr" @click="toBusinessInfo(item.businessId)" :key="index">
         <img :src="item.businessImg">
         <div class="business-info">
           <div class="business-info-h">
@@ -112,7 +110,7 @@
               <i class="fa fa-star"></i>
               <i class="fa fa-star"></i>
               <i class="fa fa-star"></i>
-              <p>4.9 月售345单</p>
+              <p>{{item.score}} 月售{{item.orderCount}}单</p>
             </div>
             <div class="business-info-star-right">
               蜂鸟专送
@@ -120,7 +118,7 @@
           </div>
           <div class="business-info-delivery">
             <p>&#165;{{item.starPrice}}起送 | &#165;{{item.deliveryPrice}}配送</p>
-            <p>3.22km | 30分钟</p>
+            <p>{{item.distance}}km | {{item.deliverytime}}分钟</p>
           </div>
           <div class="business-info-explain">
             <div>{{item.businessExplain}}</div>
@@ -145,7 +143,7 @@
       </li>
       
       
-      <li style="height:12vw"></li>
+      <div style="height:8vw;text-align:center;margin-top:4vw"> 没有更多了。。</div>
     </ul>
     </body>
     <!-- 底部菜单部分 -->
@@ -160,19 +158,35 @@ export default {
   name: 'IndexItem',
   data(){
     return {
+      keywords:"",
       businessArr:[],
+      searching:0,
     }
   },
   created() {
     this.user = this.$getSessionStorage('user');
 
     //根据orderTypeId查询商家信息
-    axios.get('BusinessController/listBusinessDefault',this.$qs.stringify({
+    axios.post('BusinessController/listBusinessDefault',this.$qs.stringify({
+        longitude:123.4,
+        latitude:41.7
     })).then(response=>{
       this.businessArr = response.data;
+     
     }).catch(error=>{
       console.error(error);
     });
+  },
+  watch: {
+    keywords(newwords, oldwords){
+      oldwords;
+      
+        if(newwords == null){
+          
+          this.mutisql;
+          
+        }
+    }
   },
   mounted() {
     document.onscroll = ()=> {
@@ -204,6 +218,67 @@ export default {
     Footer
   },
   methods:{
+    async combo(){
+      var foodlist = [];
+      await axios.get('FoodController/listFoodByTime',this.$qs.stringify({
+    })).then(response=>{
+      foodlist = response.data;
+      
+    }).catch(error=>{
+      console.error(error);
+    });
+
+    this.$router.push({path:'/businessInfo',query:{businessId:foodlist[0].businessId,fromRouter:"index",foodlist:foodlist,ok:1}});
+   
+
+    },
+    search(){
+      if(this.keywords==""){
+        this.searching = 0;
+      }else{
+        this.searching = 1;
+      }
+
+      axios.post('BusinessController/listBusinessByKeyWords',this.$qs.stringify({
+        keywords:this.keywords
+    })).then(response=>{
+      
+      this.businessArr = response.data;
+    }).catch(error=>{
+      console.error(error);
+    });
+    },
+    mutisql(){
+      this.searching = 0;
+        axios.post('BusinessController/listBusinessDefault',this.$qs.stringify({
+        longitude:123.4,
+        latitude:41.7
+    })).then(response=>{
+      this.businessArr = response.data;
+    }).catch(error=>{
+      console.error(error);
+    });
+    },
+    distancesql(){
+      axios.post('BusinessController/listBusinessByDistance',this.$qs.stringify({
+        longitude:123.4,
+        latitude:41.7
+    })).then(response=>{
+      this.businessArr = response.data;
+    }).catch(error=>{
+      console.error(error);
+    });
+    },
+    mailsql(){
+        axios.post('BusinessController/listBusinessBySales',this.$qs.stringify({
+        longitude:123.4,
+        latitude:41.7
+    })).then(response=>{
+      this.businessArr = response.data;
+    }).catch(error=>{
+      console.error(error);
+    });
+    },
     toBusinessInfo(businessId){
       this.$router.push({path:'/businessInfo',query:{businessId:businessId,fromRouter:"index"}});
     },

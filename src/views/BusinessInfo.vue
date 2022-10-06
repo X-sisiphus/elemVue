@@ -110,7 +110,9 @@
     :colors="colors">
   </el-rate>
             <Input v-model="usercom" type="textarea" :rows="4" placeholder="请输入..." style="width:90%;hieght:80%;position:absolute;left:5%;top:27%"></Input>
-    <Button @click="takecom" style="width:20%;hieght:10%;position:absolute;right:5%;top:78%">提交</Button>
+    <Button v-if="flag == true" @click="takecom" style="width:20%;hieght:10%;position:absolute;right:5%;top:78%">提交</Button>
+    <Button v-if="flag == false" style="width:20%;hieght:10%;position:absolute;right:5%;top:78%">已提交</Button>
+
     </div>
     </div>
 
@@ -127,6 +129,8 @@ export default {
       businessId: this.$route.query.businessId,
       fromRouter: this.$route.query.fromRouter,
       orderTypeId: this.$route.query.orderTypeId,
+      foodlist: this.$route.query.foodlist,
+      ok:this.$route.query.ok,
       business: {},
       com:[],
       foodArr: [],
@@ -137,6 +141,7 @@ export default {
       usercom:"",
       value2:5,
       ex:"",
+      flag:true,
     }
   },
   created() {
@@ -164,7 +169,6 @@ export default {
     })).then(response => {
       this.foodArr = response.data;
       this.foodss.push(this.foodArr);
-      console.log(this.foodArr);
       for (let i = 0; i < this.foodArr.length; i++) {
         this.foodArr[i].quantity = 0;
       }
@@ -172,19 +176,48 @@ export default {
       if (this.user != null) {
         this.listCart();
       }
-    }).catch(error => {
+    }).then(
+      response => {
+        response
+        if(this.ok == 1){
+          for (let foodItem of this.foodArr) {
+          
+          for (let cartItem of this.foodlist) {
+            if (cartItem.foodId == foodItem.foodId) {
+              
+              this.add(this.foodArr.indexOf(foodItem));
+            }
+          }
+        }
+        }
+        
+      }
+
+      
+    ).catch(error => {
       console.error(error);
     });
+    
   },
   methods: {
-    takecom(){
-    axios.post('CommentsController/saveComment', this.$qs.stringify({
+   async takecom(){
+    await axios.post('CommentsController/saveComment', this.$qs.stringify({
       businessId: this.businessId,
       userId: this.user.userId,
       foodId: this.foodss[0].foodId,
       content: this.usercom,
       star: this.value2
-    }))
+    })).then(
+      this.flag = false,
+    )
+    axios.post('CommentsController/listComment', this.$qs.stringify({
+      businessId: this.businessId
+    })).then(response => {
+      this.com = response.data;
+    }).catch(error => {
+      console.error(error);
+    });
+    this.$Message.info('评论成功');
     },
     tofc(key){
         if(key==1){
@@ -195,6 +228,17 @@ this.fo = false
         }
     },
     back(){
+      if(this.foodlist){
+      for (let foodItem of this.foodArr) {
+          
+          for (let cartItem of this.foodlist) {
+            if (cartItem.foodId == foodItem.foodId) {
+              
+              this.minus(this.foodArr.indexOf(foodItem));
+            }
+          }
+      } 
+      }
       if(this.fromRouter == "index"){
       this.$router.push({
           path: '/index'
@@ -226,6 +270,11 @@ this.fo = false
       }).catch(error => {
         console.error(error);
       });
+
+
+
+
+
     },
     add(index) {
       //首先做登录验证
@@ -318,6 +367,7 @@ this.fo = false
           businessId: this.business.businessId,
           fromRouter: this.fromRouter,
           orderTypeId: this.orderTypeId,
+          foodlist:this.foodlist,
         }
       });
     }
