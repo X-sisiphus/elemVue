@@ -32,7 +32,7 @@ export default{
   name:'BusinessList',
   data(){
     return {
-      orderTypeId: this.$route.query.orderTypeId,
+      orderTypeId: this.$route.query.orderTypeId ,
       businessArr:[],
       user:{}
     }

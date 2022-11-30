@@ -30,10 +30,20 @@
       <p>配送费</p>
       <p>&#165;{{business.deliveryPrice}}</p>
     </div>
+    <div style="display:inline" >使用积分</div>
+            <Select v-model="creditUse" @on-select="select">
+                <Option value="0">0</Option>
+                <Option value="50">50</Option>
+                <Option value="100">100</Option>
+                <Option value="150">150</Option>
+                <Option value="200">200</Option>
+                <Option value="250">250</Option>
+            </Select>
+    <div style="font-size:15px">优惠{{youhui}}元</div>
     <!-- 合计部分 -->
     <div class="total">
       <div class="total-left">
-        &#165;{{totalPrice}}
+        &#165;{{totalPrice - youhui}}
       </div>
       <div class="total-right" @click="toPayment">
         去支付
@@ -48,6 +58,8 @@ export default{
   name:'OrdersItem',
   data(){
     return {
+      youhui:0,
+      creditUse:0,
       businessId:this.$route.query.businessId,
       fromRouter: this.$route.query.fromRouter,
       orderTypeId: this.$route.query.orderTypeId,
@@ -97,6 +109,11 @@ export default{
     }
   },
   methods:{
+    select(event){
+      this.youhui = event/50;
+      
+
+    },
     back(){
       this.$router.push({
           path: '/businessInfo?businessId='+this.businessId+'&fromRouter='+this.fromRouter+'&orderTypeId='+this.orderTypeId,
@@ -111,15 +128,27 @@ export default{
         alert('请选择送货地址！');
         return;
       }
-
+      
       //创建订单
       axios.post('OrdersController/createOrders',this.$qs.stringify({
         userId:this.user.userId,
         businessId:this.businessId,
         daId:this.deliveryaddress.daId,
-        orderTotal:this.totalPrice
+        orderTotal:this.totalPrice - this.youhui
       })).then(response=>{
         let orderId = response.data;
+
+        axios.post('CreditController/spendCredit?userId='+this.user.userId+'&channelId=_SPEND_'+'&eventId='+orderId+'&credit='+this.creditUse,this.$qs.stringify({
+        
+      })).then(response=>{
+        console.log( response.data);
+        
+      }).catch(error=>{
+        console.error(error);
+      });
+
+
+
         if(orderId>0){
           this.$router.push({path:'/payment',query:{orderId:orderId}});
         }else{

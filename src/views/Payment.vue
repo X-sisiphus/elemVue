@@ -35,7 +35,7 @@
       </li>
     </ul>
     <div class="payment-button">
-      <button>确认支付</button>
+      <button @click="change">确认支付</button>
     </div>
     <!-- 底部菜单部分 -->
     <Footer></Footer>
@@ -56,11 +56,12 @@ export default {
     }
   },
   created() {
+    this.user = this.$getSessionStorage('user');
     axios.post('OrdersController/getOrdersById',this.$qs.stringify({
       orderId:this.orderId
     })).then(response=>{
       this.orders = response.data;
-      console.log(this.orders)
+      
     }).catch(error=>{
       console.error(error);
     });
@@ -80,6 +81,19 @@ export default {
   methods:{
     detailetShow(){
       this.isShowDetailet = !this.isShowDetailet;
+    },
+    change(){
+      axios.post('WalletController/pay',this.$qs.stringify({
+      outId:this.orders.userId,
+      amount:this.orders.orderTotal,
+      type:2
+    })).then(response=>{
+      console.log(response);
+      this.$router.push({path:'/index'})
+
+    }).catch(error=>{
+      console.error(error);
+    });
     }
   },
   components: {

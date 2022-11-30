@@ -41,6 +41,81 @@
 
         
     </Modal>
+    <Button class="btn2" type="primary" @click="modal2 = true">我的钱包</Button>
+    
+    <Modal
+        v-model="modal2"
+        title="我的钱包"
+        @on-ok="ok"
+        @on-cancel="cancel">
+    <div style="text-align: center;font-weight:1000;font-size:20px"> {{balance}} ¥</div>
+    <Menu mode="horizontal" :theme="theme1" active-name="1" @on-select="tofc1">
+        <Menu-item name="1">
+            <Icon type="ios-paper"></Icon>
+            充值和提现
+        </Menu-item>
+        <Menu-item name="2">
+            <Icon type="ios-people"></Icon>
+            交易流水
+        </Menu-item>
+    </Menu>
+    <ul style="font-size:15px;" v-if="fo1">
+      <Input v-model="fund" prefix="logo-yen" placeholder="Enter number" style="width:50vw;margin-top:5vw" />
+      <Button class="btn3" type="primary" @click="fundnum">充值</Button>
+      <Input  v-model="withdraw" prefix="logo-yen" placeholder="Enter number" style="width:50vw;margin-top:5vw" />
+      <Button class="btn3" type="primary" @click="withdrawnum">提现</Button>
+    </ul>
+    <ul style="font-size:15px" v-if="!fo1">
+      <li v-for="(item,index) in wallet" :key="index">
+      <div style="display: inline;" v-if="item.transactionType == 2">花费</div>
+      <div style="display: inline;" v-if="item.transactionType == 1">提现</div>
+      <div style="display: inline;" v-if="item.transactionType == 0">充值</div>
+        <div style="display: inline;">{{item.amount}}</div>
+        <div style="float:right">{{item.transactionTime}}</div>
+      </li>
+      
+    </ul>
+    </Modal>
+    <Button class="btn2" type="primary" @click="modal3 = true">积分查询</Button>
+    <Modal
+        v-model="modal3"
+        title="修改密码"
+       
+        @on-cancel="cancel">
+               <div style="text-align: center;font-weight:1000;font-size:20px"> {{totalCredit}}积分 </div>
+            <Menu mode="horizontal" :theme="theme1" active-name="1" @on-select="tofc">
+        <Menu-item name="1">
+            <Icon type="ios-people"></Icon>
+            积分赚取查询
+        </Menu-item>
+        <Menu-item name="2">
+            <Icon type="ios-paper"></Icon>
+            积分消费查询
+        </Menu-item>
+        
+
+        
+
+    </Menu>  
+    <ul style="font-size:15px" v-if="fo">
+      <li v-for="(item,index) in addCredit" :key="index">
+      <div style="display: inline;" v-if="item.channelId == '_ORDER_'">购物</div>
+      <div style="display: inline;" v-if="item.channelId == '_COMMENT_'">评论</div>
+        <div style="display: inline;">获得{{item.credit}}积分</div>
+        <div style="float:right">{{item.createTime}}</div>
+      </li>
+      
+    </ul>
+    <ul style="font-size:15px" v-if="!fo">
+      <li v-for="(item,index) in minusCredit" :key="index">
+      <div style="display: inline;" v-if="item.channelId == '_SPEND_'">花费</div>
+      <div style="display: inline;" v-if="item.channelId == '_OT_'">过期</div>
+        <div style="display: inline;">减少{{item.credit}}积分</div>
+        <div style="float:right">{{item.createTime}}</div>
+      </li>
+      
+    </ul>
+    </Modal>
     <!-- 底部菜单部分 -->
     </body>
     <Footer></Footer>
@@ -53,15 +128,27 @@ export default{
   name:'UserCenter',
   data(){
     return {
+      withdrawnum:0,
+      fundnum:0,
       modal: false,
       modal1: false,
+      modal2: false,
+      modal3: false,
+      fo:true,
+      fo1:true,
       user:{},
       sex: "1",
       newName:"",
       userId:"",
       userName:"",
       userSex:0,
-      newPassword:""
+      newPassword:"",
+      totalCredit:0,
+      addCredit:[],
+      minusCredit:[],
+      balance:"",
+      wallet:[],
+
     }
   },
   created() {
@@ -79,8 +166,92 @@ export default{
     }).catch(error=>{
       console.error(error);
     });
+    axios.get('WalletController/balance?userId='+this.user.userId,this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.balance = result;
+    }).catch(error=>{
+      console.error(error);
+    });
+    axios.get('CreditController/getTotalCredit?userId='+this.user.userId,this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.totalCredit = result;
+    }).catch(error=>{
+      console.error(error);
+    });
+    axios.get('/CreditController/getCreditByParam?userId='+this.user.userId+'&param=0',this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.addCredit = result;
+    }).catch(error=>{
+      console.error(error);
+    });
+    axios.get('/CreditController/getCreditByParam?userId='+this.user.userId+'&param=1',this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.minusCredit = result;
+    }).catch(error=>{
+      console.error(error);
+    });
+    axios.get('WalletController/transaction?userId='+this.user.userId,this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.wallet = result;
+    }).catch(error=>{
+      console.error(error);
+    });
   },
   methods:{
+    fund(){
+      axios.post('fund?inId='+this.user.userId+'&amount'+this.fundnum+'&type='+0,this.$qs.stringify({
+        
+      })).then(response=>{
+        console.log( response.data);
+        axios.get('WalletController/balance?userId='+this.user.userId,this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.balance = result;
+    }).catch(error=>{
+      console.error(error);
+    });
+      }).catch(error=>{
+        console.error(error);
+      });
+    },
+    withdraw(){
+      axios.post('withdraw?outId='+this.user.userId+'&amount'+this.withdrawnum+'&type='+1,this.$qs.stringify({
+        
+      })).then(response=>{
+        console.log( response.data);
+        axios.get('WalletController/balance?userId='+this.user.userId,this.$qs.stringify({
+    })).then(response=>{
+      let result = response.data;
+      this.balance = result;
+    }).catch(error=>{
+      console.error(error);
+    });
+      }).catch(error=>{
+        console.error(error);
+      });
+    },
+
+    tofc(key){
+        if(key==1){
+this.fo = true
+        }
+        else{
+this.fo = false
+        }
+    },
+    tofc1(key){
+        if(key==1){
+this.fo1 = true
+        }
+        else{
+this.fo1 = false
+        }
+    },
     fresh(){
         this.user = this.$getSessionStorage('user');
     axios.post('UserController/getUserInfoById',this.$qs.stringify({
@@ -208,7 +379,7 @@ export default{
   width: 80vw;
   height: 10vw;
   margin-left: 10vw;
-  margin-top: 30vw;
+  margin-top: 20vw;
   border-radius: 10px;
   border: 0.1px solid;
   font-size: 4vw;
@@ -220,6 +391,17 @@ export default{
   height: 10vw;
   margin-left: 10vw;
   margin-top: 10vw;
+  border-radius: 10px;
+  border: 0.1px solid;
+  font-size: 4vw;
+  color:white;
+}
+.btn3{
+  background: linear-gradient(to bottom right, #0097FF, rgb(177, 201, 247));
+  width: 20vw;
+  height: 10vw;
+  margin-left: 10vw;
+ margin-top:5vw;
   border-radius: 10px;
   border: 0.1px solid;
   font-size: 4vw;

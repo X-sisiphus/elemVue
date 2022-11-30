@@ -22,7 +22,7 @@ Vue.use(ElementUI);
 Vue.prototype.axios = axios;
 Vue.config.productionTip = false;
 //设置axios的基础url部分
-axios.defaults.baseURL = 'http://47.93.190.191:8080/elm/'; //将axios挂载到vue实例上，使用时就可以 this.$axios 这样使用了 Vue.prototype.$axios = axios;
+axios.defaults.baseURL = 'http://192.168.43.194:8080/elm/'; //将axios挂载到vue实例上，使用时就可以 this.$axios 这样使用了 Vue.prototype.$axios = axios;
 Vue.prototype.$qs = qs;
 Vue.prototype.$getCurDate = getCurDate;
 Vue.prototype.$setSessionStorage = setSessionStorage;
